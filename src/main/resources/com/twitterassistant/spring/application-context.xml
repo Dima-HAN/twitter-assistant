@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <!-- Application Context Imports -->
+  <!-- order is important -->
+  <import resource="classpath:/com/twitterassistant/spring/common-context.xml"/>  
+  <import resource="classpath:/com/twitterassistant/spring/db-context.xml"/>
+  <import resource="classpath:/com/twitterassistant/spring/security-context.xml"/>
+	
+	<!-- Cron Jobs -->
+  <!-- <import resource="classpath:/com/twitterassistant/spring/cron-context.xml"/> -->
+  
+  <!-- Captcha configuration -->
+  <import resource="classpath:/com/twitterassistant/spring/captcha-context.xml"/> 
+  
+  <!-- Java Melody -->
+  <import resource="classpath:/net/bull/javamelody/monitoring-spring-aspectj.xml"/>
+
+</beans>

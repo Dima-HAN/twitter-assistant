@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans.xsd			                     
+			                     http://www.springframework.org/schema/tx     http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+       
+  <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+    <property name="persistenceUnitName" value="twitterassistant-mongo"/>    
+  </bean>
+  
+  <bean class="com.arjuna.ats.jta.TransactionManager" factory-method="transactionManager" id="arjunaTransactionManager"/>
+	<bean class="com.arjuna.ats.jta.UserTransaction" factory-method="userTransaction" id="arjunaUserTransaction"/>  
+  
+  <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+    <property name="transactionManager" ref="arjunaTransactionManager"/>
+	  <property name="userTransaction" ref="arjunaUserTransaction"/>
+  </bean>
+  
+  <tx:annotation-driven transaction-manager="transactionManager"/>
+
+</beans>

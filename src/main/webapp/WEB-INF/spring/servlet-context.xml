@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:sec="http://www.springframework.org/schema/security" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+
+	<mvc:annotation-driven />
+
+	<!-- Enable Aspect Oriented Programming -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />	
+
+	<!-- Scan for Spring beans declared via annotations. -->
+	<context:component-scan base-package="com.twitterassistant.web" />	
+
+	<!-- Spring Web MVC -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+		<property name="exposedContextBeanNames">
+			<list><value>twitProperties</value></list>
+		</property>
+	</bean>
+
+
+	<!-- Spring Locale context -->
+	<import resource="classpath:/com/twitterassistant/spring/locale-context.xml" />
+
+
+	<!-- Enable Spring / JSR250 Annotations / Pre-Post annotations, !Important 
+		this block has to be defined in root context only otherwise it does not take 
+		an effect -->
+	<sec:global-method-security
+		secured-annotations="enabled" jsr250-annotations="enabled"
+		pre-post-annotations="enabled">
+	</sec:global-method-security>
+	
+	
+
+
+</beans>

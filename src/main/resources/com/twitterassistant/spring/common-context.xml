@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+													 http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	
+	<!-- Property File Config -->
+	<bean id="twitProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<value>classpath:/com/twitterassistant/twit.properties</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="properties" ref="twitProperties" />
+	</bean>
+
+	<!-- Spring Annotation Auto Scanning -->
+	<context:component-scan base-package="com.twitterassistant">
+		<context:exclude-filter type="regex"
+			expression="com/twitterassistant/web/.*" />
+	</context:component-scan>
+	<context:annotation-config />
+
+
+	<!-- Creates the JSR-303 Validator -->
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="validationMessageSource" ref="messageSource" />
+	</bean>
+
+	<!-- Add custom view scope that isn't available with JSF + Spring out of 
+		the box -->
+	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+		<property name="scopes">
+			<map>
+				<entry key="view">
+					<bean class="com.twitterassistant.web.jsf.scope.ViewScope" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<!-- Email Configuration -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${mail.smtp.host}" />
+		<property name="port" value="${mail.smtp.port}" />
+		<property name="protocol" value="${mail.transport.protocol}" />
+		<property name="username" value="${mail.username}" />
+		<property name="password" value="${mail.password}" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.timeout">30000</prop>
+				<prop key="mail.smtp.connectiontimeout">30000</prop>
+				<prop key="mail.debug">false</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">false</prop>
+				<prop key="mail.smtp.quitwait">false</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Email Velocity Templates Configuration -->
+	<bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">			
+		<property name="resourceLoaderPath" value="classpath:/com/twitterassistant/velocity" />
+		<property name="preferFileSystemAccess" value="${velocity.preferFileSystemAccess}" />				
+		<property name="velocityProperties">
+      <props>
+        <prop key="input.encoding">UTF-8</prop>
+        <prop key="output.encoding">UTF-8</prop>
+        <prop key="tools.toolbox">application</prop>
+        <prop key="tools.application.esc">org.apache.velocity.tools.generic.EscapeTool</prop>
+				<prop key="file.resource.loader.cache">true</prop>
+      </props>
+    </property>			
+	</bean>
+		
+	<!-- Configure the multipart resolver -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+			p:maxUploadSize="${twitterassistant.server.maxFileUpload}"/>
+
+</beans>
